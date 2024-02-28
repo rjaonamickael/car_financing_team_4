@@ -83,8 +83,6 @@ public class LoginView extends JPanel {
             return false;
         }
         if(password1.equals(password2) && regex(password1)){
-            JOptionPane.showMessageDialog(null, "Email :"+email+"\n Mot de passe :"+password1,
-                    "Connecté", JOptionPane.INFORMATION_MESSAGE);
             return true;
         }
         return false;

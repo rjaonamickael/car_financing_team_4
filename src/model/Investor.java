@@ -6,10 +6,9 @@ public class Investor extends User{
 
 
 
-    public Investor(String nom, String prenom, String mdp, String phoneNumero, String banqueNom, String banqueDetailsCompte,
+    public Investor(String nomComplet, String mdp, String phoneNumero, String banqueNom, String banqueDetailsCompte,
                             String niveauRisque, String niveauEducInvest) {
-        this.nom = nom;
-        this.prenom = prenom;
+        this.nomComplet = nomComplet;
         this.mdp = mdp;
         this.phoneNumero = phoneNumero;
         this.banqueNom = banqueNom;

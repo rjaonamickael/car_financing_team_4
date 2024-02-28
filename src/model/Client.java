@@ -9,10 +9,9 @@ public class Client extends User{
     public short nbrJourAuCanada;
 
 
-    public Client(String nom, String prenom, String mdp, String phoneNumero, String banqueNom, String banqueDetailsCompte,
+    public Client(String nomComplet, String mdp, String phoneNumero, String banqueNom, String banqueDetailsCompte,
                         byte creditNote, Date datenaiss, String statutMaritial, short nbrJourAuCanada) {
-        this.nom = nom;
-        this.prenom = prenom;
+        this.nomComplet = nomComplet;
         this.mdp = mdp;
         this.phoneNumero = phoneNumero;
         this.banqueNom = banqueNom;

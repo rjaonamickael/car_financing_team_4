@@ -13,6 +13,7 @@ public class RegisterView extends JPanel {
     private JTextField phoneField = new JTextField(20);
     private JComboBox<String> userTypeComboBox = new JComboBox<>(new String[]{"Client", "Investisseur"});
 
+
     // Champs pour les clients
     private JTextField employmentInfoField = new JTextField(20);
     private JTextField annualIncomeField = new JTextField(20);
@@ -30,51 +31,9 @@ public class RegisterView extends JPanel {
     public RegisterView() {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        add(new JLabel("Type d'Utilisateur:"), gbc);
-
-        gbc.gridx = 1;
-        add(userTypeComboBox, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy++;
-        add(new JLabel("Nom complet:"), gbc);
-
-        gbc.gridx = 1;
-        add(fullNameField, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy++;
-        add(new JLabel("Adresse électronique:"), gbc);
-
-        gbc.gridx = 1;
-        add(emailField, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy++;
-        add(new JLabel("Mot de passe:"), gbc);
-
-        gbc.gridx = 1;
-        add(passwordField, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy++;
-        add(new JLabel("Confirmer le mot de passe:"), gbc);
-
-        gbc.gridx = 1;
-        add(confirmPasswordField, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy++;
-        add(new JLabel("Numéro de téléphone:"), gbc);
-
-        gbc.gridx = 1;
-        add(phoneField, gbc);
-
-        // Ajoutez ici les champs supplémentaires requis pour les clients et investisseurs
+        //Chargement du Panel contenant le formulaire
+        updateFormFields();
 
         userTypeComboBox.addActionListener(new ActionListener() {
             @Override
@@ -177,7 +136,7 @@ public class RegisterView extends JPanel {
 
             gbc.gridx = 0;
             gbc.gridy++;
-            add(new JLabel("Établi au Canada depuis (durée):"), gbc);
+            add(new JLabel("Établi au Canada depuis (durée):           "), gbc);
 
             gbc.gridx = 1;
             add(yearsInCanadaField, gbc);
@@ -211,6 +170,15 @@ public class RegisterView extends JPanel {
 
             gbc.gridx = 1;
             add(educationLevelComboBox, gbc);
+
+            //Ajout de ligne pour uniformiser la forme
+            gbc.gridy++;
+            add(new JLabel("  "), gbc);
+            gbc.gridy++;
+            add(new JLabel("  "), gbc);
+            gbc.gridy++;
+
+
         }
 
         // Bouton d'inscription
@@ -245,7 +213,7 @@ public class RegisterView extends JPanel {
                         // Afficher les informations du client
                         JOptionPane.showMessageDialog(RegisterView.this, client.toString(), "Inscription réussie", JOptionPane.INFORMATION_MESSAGE);
 
-                    } else if ("Investisseur".equals(userType)) {
+                    } else /*if ("Investisseur".equals(userType))*/ {
                         // Créer un objet Investor avec les champs saisis
                         Investor investor = new Investor(
                                 fullNameField.getText(),
@@ -283,10 +251,11 @@ public class RegisterView extends JPanel {
         String password = new String(passwordField.getPassword());
         String confirmPassword = new String(confirmPasswordField.getPassword());
 
+        /*
         if (!password.equals(confirmPassword)) {
             return false; // Les mots de passe ne correspondent pas
         }
-
+        */
         // Ajoutez ici d'autres conditions de validation
 
         return true; // Le formulaire est valide
