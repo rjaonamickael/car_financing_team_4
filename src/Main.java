@@ -1,3 +1,4 @@
+import config.PostgresSQLConfig;
 import view.LoginView;
 import view.RegisterView;
 
@@ -12,6 +13,17 @@ public class Main extends JFrame {
     private JPanel mainPanel = new JPanel(new GridBagLayout());
     private LoginView loginView = new LoginView();
     private RegisterView registerView = new RegisterView();
+
+    public static void main(String[] args) {
+        PostgresSQLConfig.initialisationDB();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                Main frame = new Main();
+                frame.setVisible(true);
+            }
+        });
+    }
 
     public Main() {
         setTitle("Financement Automobile XYZ");
@@ -80,16 +92,6 @@ public class Main extends JFrame {
         registerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(cardPanel, "Register");
-            }
-        });
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                Main frame = new Main();
-                frame.setVisible(true);
             }
         });
     }

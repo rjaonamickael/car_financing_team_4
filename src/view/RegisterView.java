@@ -1,9 +1,14 @@
 package view;
 
+import model.Client;
+import model.Investisseur;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RegisterView extends JPanel {
     private JTextField fullNameField = new JTextField(20);
@@ -193,48 +198,55 @@ public class RegisterView extends JPanel {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (validateForm()) {
-                    // Créer un objet Client ou Investor en fonction du type d'utilisateur
-                    if ("Client".equals(userType)) {
-                        // Créer un objet Client avec les champs saisis
-                        Client client = new Client(
-                                fullNameField.getText(),
-                                emailField.getText(),
-                                passwordField.getPassword(),
-                                phoneField.getText(),
-                                employmentInfoField.getText(),
-                                annualIncomeField.getText(),
-                                creditScoreField.getText(),
-                                birthDateField.getText(),
-                                maritalStatusComboBox.getSelectedItem().toString(),
-                                yearsInCanadaField.getText()
-                        );
+                try {
+                    if (validateForm()) {
+                        // Créer un objet Client ou Investor en fonction du type d'utilisateur
+                        if ("Client".equals(userType)) {
+                            // Créer un objet Client avec les champs saisis
+                            Client client = new Client(
+                                    fullNameField.getText(),
+                                    emailField.getText(),
+                                    passwordField.getText(),
+                                    phoneField.getText(),
+                                    employmentInfoField.getText(),
+                                    annualIncomeField.getText(),
+                                    creditScoreField.getText(),
+                                    birthDateField.getText(),
+                                    maritalStatusComboBox.getSelectedItem().toString(),
+                                    yearsInCanadaField.getText()
+                            );
 
-                        // Afficher les informations du client
-                        JOptionPane.showMessageDialog(RegisterView.this, client.toString(), "Inscription réussie", JOptionPane.INFORMATION_MESSAGE);
+                            // Afficher les informations du client
+                            infoMessage("Inscription réussie",
+                                    client.toString(),
+                                    "succes");
 
-                    } else /*if ("Investisseur".equals(userType))*/ {
-                        // Créer un objet Investor avec les champs saisis
-                        Investor investor = new Investor(
-                                fullNameField.getText(),
-                                emailField.getText(),
-                                passwordField.getPassword(),
-                                phoneField.getText(),
-                                bankNameField.getText(),
-                                accountDetailsField.getText(),
-                                riskLevelComboBox.getSelectedItem().toString(),
-                                educationLevelComboBox.getSelectedItem().toString()
-                        );
+                        } else {
+                            // Créer un objet Investor avec les champs saisis
+                            Investisseur investor = new Investisseur(
+                                    fullNameField.getText(),
+                                    emailField.getText(),
+                                    passwordField.getText(),
+                                    phoneField.getText(),
+                                    bankNameField.getText(),
+                                    accountDetailsField.getText(),
+                                    riskLevelComboBox.getSelectedItem().toString(),
+                                    educationLevelComboBox.getSelectedItem().toString()
+                            );
 
-                        // Afficher les informations de l'investisseur
-                        JOptionPane.showMessageDialog(RegisterView.this, investor.toString(), "Inscription réussie", JOptionPane.INFORMATION_MESSAGE);
+                            // Afficher les informations de l'investisseur
+                            infoMessage("Inscription réussie",
+                                    investor.toString(),
+                                    "succes");
+                        }
+
+                        // Effacer les champs après l'inscription
+                        clearForm();
                     }
-
-                    // Effacer les champs après l'inscription
-                    clearForm();
-                } else {
-                    // Afficher un message d'erreur si la validation échoue
-                    JOptionPane.showMessageDialog(RegisterView.this, "Veuillez remplir tous les champs correctement.", "Erreur d'inscription", JOptionPane.ERROR_MESSAGE);
+                } catch (Exception exception) {
+                    infoMessage("Erreur d'inscription",
+                            "Il y a certains champs qui ne sont pas correctement remplis.",
+                            "erreur");
                 }
             }
         });
@@ -243,24 +255,84 @@ public class RegisterView extends JPanel {
         repaint(); // Redessiner le panel
     }
 
-    private boolean validateForm() {
-        // Implémentez la logique de validation du formulaire ici
-        // Vérifiez que tous les champs sont remplis correctement
-
-        // Exemple de validation pour le mot de passe (à adapter selon vos besoins)
-        String password = new String(passwordField.getPassword());
-        String confirmPassword = new String(confirmPasswordField.getPassword());
-
-        /*
-        if (!password.equals(confirmPassword)) {
-            return false; // Les mots de passe ne correspondent pas
+    private void infoMessage(String titre, String message, String type) {
+        if (type.equals("erreur")) {
+            JOptionPane.showMessageDialog(RegisterView.this, message, titre, JOptionPane.ERROR_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(RegisterView.this, message, titre, JOptionPane.INFORMATION_MESSAGE);
         }
-        */
-        // Ajoutez ici d'autres conditions de validation
 
-        return true; // Le formulaire est valide
     }
 
+    private boolean validateForm() {
+
+        boolean validated = false;
+        boolean champsVide;
+        // Vérification des champs vide ou non
+        if (userTypeComboBox.getSelectedItem().equals("Client")) {
+            champsVide = !fullNameField.getText().equals("") && !emailField.getText().equals("") && !passwordField.getText().equals("") &&
+                    !confirmPasswordField.getText().equals("") && !phoneField.getText().equals("") &&
+                    !employmentInfoField.getText().equals("") && !annualIncomeField.getText().equals("") && !creditScoreField.getText().equals("") &&
+                    !birthDateField.getText().equals("") && !yearsInCanadaField.getText().equals("");
+        } else {
+            champsVide = !fullNameField.getText().equals("") && !emailField.getText().equals("") && !passwordField.getText().equals("") &&
+                    !confirmPasswordField.getText().equals("") && !phoneField.getText().equals("") &&
+                    !bankNameField.getText().equals("") && !accountDetailsField.getText().equals("");
+
+        }
+        if (champsVide) {
+            // Vérification de la correspondance des deux mots de passes
+            String password = new String(passwordField.getText());
+            String confirmPassword = new String(confirmPasswordField.getText());
+
+            if (!password.equals(confirmPassword)) {
+                validated = false; // Les mots de passe ne correspondent pas
+                infoMessage("Erreur d'inscription",
+                        "Les mots de passe ne sont pas identiques",
+                        "erreur");
+            } else if (regex(password)) {
+                validated = true;
+            }
+
+        } else {
+            infoMessage("Erreur d'inscription",
+                    "Il y a certains champs qui sont vides.",
+                    "erreur");
+        }
+
+
+        // Ajoutez ici d'autres conditions de validation
+
+        return validated; // Retourner false par défaut sauf si conditions vérifiées.
+    }
+    private boolean regex(String password){
+
+        if(password.length() > 7){
+            //Définition de l'expression régulière
+            String regex  = ".*\\d.*[A-Z].*[@#$%^&*!</>].*|.*[A-Z].*[@#$%^&*!</>].*\\d.*|.*[@#$%^&*!</>].*[A-Z].*\\d.*|" +
+                    ".*\\d.*[@#$%^&*!</>].*[A-Z].*|.*[A-Z].*\\d.*[@#$%^&*!</>].*|.*[@#$%^&*!</>].*\\d.*[A-Z].*";
+
+            // Créer un objet Pattern en compilant l'expression régulière
+            Pattern pattern = Pattern.compile(regex);
+            //Matching avec l'expression régulière
+            Matcher matcher = pattern.matcher(password);
+
+            if (matcher.matches()){
+                return true;
+            }
+            else{
+                infoMessage("Erreur d'inscription",
+                        "Il faut que le mot de passe contienne un caractère spécial, un chiffre et une lettre majuscule",
+                        "erreur");
+            }
+        }
+        else{
+            infoMessage("Erreur d'inscription",
+                    "Il faut que le mot de passe soit supérieur à 7 caractères",
+                    "erreur");
+        }
+        return false;
+    }
     private void clearForm() {
         // Effacer tous les champs du formulaire après l'inscription
         fullNameField.setText("");
@@ -283,16 +355,4 @@ public class RegisterView extends JPanel {
     // Ajoutez ici les classes Client et Investor avec leurs constructeurs et la méthode toString
     // en fonction des champs requis pour chaque type d'utilisateur.
 
-    private class Client {
-        public Client(String text, String text1, char[] password, String text2, String text3, String text4, String text5, String text6, String toString, String text7) {
-            
-        }
-        // Implémentez la classe Client ici
-    }
-
-    private class Investor {
-        public Investor(String text, String text1, char[] password, String text2, String text3, String text4, String toString, String toString1) {
-        }
-        // Implémentez la classe Investor ici
-    }
 }
