@@ -1,11 +1,20 @@
 package view;
 
+import config.PostgresSQLConfig;
+import controller.InvestisseurDAOImpl;
+import dao.InvestisseurInterf;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static methods.BiblioMethode.sha256;
 
 public class LoginView extends JPanel {
     private JTextField emailField = new JTextField(20);
@@ -47,35 +56,23 @@ public class LoginView extends JPanel {
     private void loginAction() {
         // Récupérer les informations saisies lors de la connexion
         String email = emailField.getText();
-        String password = new String(passwordField.getPassword());
+        String mdpTape = new String(passwordField.getPassword());
 
+        InvestisseurDAOImpl investisseurDAO = new InvestisseurDAOImpl();
 
-        //Vérification des champs saisie
-        if( verifChampSaisi(email, password) ){
-            // Assurer la sécurité des mots de passe (vous pouvez implémenter une logique de hachage ici)
-            // Pour cet exemple, nous imprimons simplement les informations
-            System.out.println("Adresse électronique: " + email);
-            System.out.println("Mot de passe: " + password);
+        String mdp = investisseurDAO.getPasswordSalt(email)[0];
+        String salt = investisseurDAO.getPasswordSalt(email)[1];
 
-            // Réinitialiser les champs après la connexion
-            emailField.setText("");
-            passwordField.setText("");
+        if(mdp.equals( sha256(mdpTape, salt.getBytes() ) ) ){
+            JOptionPane.showMessageDialog(LoginView.this, "Vous êtes connecté", "Connecté", JOptionPane.INFORMATION_MESSAGE);
         }
-        else{
-            JOptionPane.showMessageDialog(null, "Saisissez correctement les champs !",
-                    "Erreur", JOptionPane.ERROR_MESSAGE);
+        else if (!salt.equals(null)){
+            JOptionPane.showMessageDialog(LoginView.this, "Mot de passe incorrect", "erreur", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-
-
-    private boolean verifChampSaisi(String email, String password){
-        if( email.equals("") && password.equals("") ){
-            JOptionPane.showMessageDialog(null, "email :"+email+"\n mot de passe :"+password,
-                    "Connecté", JOptionPane.INFORMATION_MESSAGE);
-            return true;
+        else {
+            JOptionPane.showMessageDialog(LoginView.this, "Utilisateur introuvable", "erreur", JOptionPane.ERROR_MESSAGE);
         }
-        return false;
+
     }
 
 }

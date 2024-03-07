@@ -1,6 +1,5 @@
 package config;
 
-import javax.swing.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -23,30 +22,32 @@ public class PostgresSQLConfig {
         String createTableSQL = "CREATE TABLE IF NOT EXISTS client (" +
                 "id_client SERIAL PRIMARY KEY,"+
                 "nomComplet VARCHAR(50)," +
-                "adressemail VARCHAR(20)," +
-                "mdp VARCHAR(20)," +
-                "phoneNumero VARCHAR(10)," +
-                "infoEmploi VARCHAR(50)," +
+                "adressemail VARCHAR(50)," +
+                "mdp VARCHAR(300)," +
+                "salt VARCHAR(50)," +
+                "phoneNumero VARCHAR(20)," +
+                "infoEmploi VARCHAR(100)," +
                 "revenuAnnuel INT," +
                 "creditNote INT," +
                 "datenaiss Date," +
-                "statutMarital VARCHAR(10)," +
+                "statutMarital VARCHAR(20)," +
                 "nbrJourAuCanada INT" +
                 ");";
         // Création de la table investisseur
         createTableSQL += "CREATE TABLE IF NOT EXISTS investisseur (" +
                 "id_invest SERIAL PRIMARY KEY,"+
                 "nomComplet VARCHAR(50)," +
-                "adressemail VARCHAR(20)," +
-                "mdp VARCHAR(20)," +
-                "phoneNumero VARCHAR(10)," +
+                "adressemail VARCHAR(50)," +
+                "mdp VARCHAR(300)," +
+                "salt VARCHAR(50)," +
+                "phoneNumero VARCHAR(20)," +
                 "banqueNom VARCHAR(20)," +
-                "banqueDetailsCompte VARCHAR(50)," +
-                "niveauRisque VARCHAR(10)," +
+                "banqueDetailsCompte VARCHAR(100)," +
+                "niveauRisque VARCHAR(20)," +
                 "niveauEducInvest VARCHAR(10)" +
                 ");";
 
-        try (Connection conn= connect() ; Statement statement = conn.createStatement()){
+        try (Connection conn = connect() ; Statement statement = conn.createStatement()){
             statement.execute(createTableSQL);
             System.out.println("Tables crées");
         } catch (SQLException e){

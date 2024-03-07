@@ -1,5 +1,8 @@
 package view;
 
+
+import controller.ClientDAOImpl;
+import controller.InvestisseurDAOImpl;
 import model.Client;
 import model.Investisseur;
 
@@ -7,8 +10,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.SecureRandom;
+import java.sql.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static methods.BiblioMethode.sha256;
+
 
 public class RegisterView extends JPanel {
     private JTextField fullNameField = new JTextField(20);
@@ -206,27 +214,28 @@ public class RegisterView extends JPanel {
                             Client client = new Client(
                                     fullNameField.getText(),
                                     emailField.getText(),
-                                    passwordField.getText(),
+                                    hachage(String.valueOf(passwordField.getPassword()))[0],    //le mot de passe haché
+                                    hachage(String.valueOf(passwordField.getPassword()))[1],    //le salt haché
                                     phoneField.getText(),
                                     employmentInfoField.getText(),
-                                    annualIncomeField.getText(),
-                                    creditScoreField.getText(),
-                                    birthDateField.getText(),
+                                    Short.parseShort(annualIncomeField.getText()),
+                                    Byte.parseByte(creditScoreField.getText()),
+                                    Date.valueOf(birthDateField.getText()),
                                     maritalStatusComboBox.getSelectedItem().toString(),
-                                    yearsInCanadaField.getText()
+                                    Short.parseShort(yearsInCanadaField.getText())
                             );
 
-                            // Afficher les informations du client
-                            infoMessage("Inscription réussie",
-                                    client.toString(),
-                                    "succes");
+                            // Ajout du client dans la bdd
+                            ClientDAOImpl clientDAO = new ClientDAOImpl();
+                            clientDAO.addClient(client);
 
                         } else {
                             // Créer un objet Investor avec les champs saisis
-                            Investisseur investor = new Investisseur(
+                            Investisseur investisseur = new Investisseur(
                                     fullNameField.getText(),
                                     emailField.getText(),
-                                    passwordField.getText(),
+                                    hachage(String.valueOf(passwordField.getPassword()))[0],    //le mot de passe haché
+                                    hachage(String.valueOf(passwordField.getPassword()))[1],    //le salt haché
                                     phoneField.getText(),
                                     bankNameField.getText(),
                                     accountDetailsField.getText(),
@@ -234,10 +243,9 @@ public class RegisterView extends JPanel {
                                     educationLevelComboBox.getSelectedItem().toString()
                             );
 
-                            // Afficher les informations de l'investisseur
-                            infoMessage("Inscription réussie",
-                                    investor.toString(),
-                                    "succes");
+                            // Ajout de l'investisseur dans la bdd
+                            InvestisseurDAOImpl investisseurDAO = new InvestisseurDAOImpl();
+                            investisseurDAO.addInvestisseur(investisseur);
                         }
 
                         // Effacer les champs après l'inscription
@@ -263,7 +271,6 @@ public class RegisterView extends JPanel {
         }
 
     }
-
     private boolean validateForm() {
 
         boolean validated = false;
@@ -351,8 +358,15 @@ public class RegisterView extends JPanel {
         riskLevelComboBox.setSelectedIndex(0);
         educationLevelComboBox.setSelectedIndex(0);
     }
+    private String[] hachage(String mdp){
+        //Création du salt
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[1];
+        random.nextBytes(salt);
 
-    // Ajoutez ici les classes Client et Investor avec leurs constructeurs et la méthode toString
-    // en fonction des champs requis pour chaque type d'utilisateur.
+
+        return sha256(mdp,salt);
+
+    }
 
 }
