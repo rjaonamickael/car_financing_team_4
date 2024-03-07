@@ -5,7 +5,11 @@ public abstract class User {
 
     public String adressemail;
     public String mdp;
+
+    public String salt;
     public String phoneNumero;
+
+
 
 
 }
