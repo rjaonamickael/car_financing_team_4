@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.security.SecureRandom;
 import java.sql.Date;
+import java.util.HexFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,12 +42,15 @@ public class RegisterView extends JPanel {
     private JComboBox<String> riskLevelComboBox = new JComboBox<>(new String[]{"Peu de risque", "Risqué", "Très risqué"});
     private JComboBox<String> educationLevelComboBox = new JComboBox<>(new String[]{"Peu", "Moyen", "Beaucoup"});
 
+
+
     public RegisterView() {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
         //Chargement du Panel contenant le formulaire
         updateFormFields();
+
 
         userTypeComboBox.addActionListener(new ActionListener() {
             @Override
@@ -202,6 +206,7 @@ public class RegisterView extends JPanel {
         JButton registerButton = new JButton("S'inscrire");
         add(registerButton, gbc);
 
+
         // ActionListener pour le bouton d'inscription
         registerButton.addActionListener(new ActionListener() {
             @Override
@@ -210,42 +215,65 @@ public class RegisterView extends JPanel {
                     if (validateForm()) {
                         // Créer un objet Client ou Investor en fonction du type d'utilisateur
                         if ("Client".equals(userType)) {
-                            // Créer un objet Client avec les champs saisis
-                            Client client = new Client(
-                                    fullNameField.getText(),
-                                    emailField.getText(),
-                                    hachage(String.valueOf(passwordField.getPassword()))[0],    //le mot de passe haché
-                                    hachage(String.valueOf(passwordField.getPassword()))[1],    //le salt haché
-                                    phoneField.getText(),
-                                    employmentInfoField.getText(),
-                                    Short.parseShort(annualIncomeField.getText()),
-                                    Byte.parseByte(creditScoreField.getText()),
-                                    Date.valueOf(birthDateField.getText()),
-                                    maritalStatusComboBox.getSelectedItem().toString(),
-                                    Short.parseShort(yearsInCanadaField.getText())
-                            );
 
-                            // Ajout du client dans la bdd
-                            ClientDAOImpl clientDAO = new ClientDAOImpl();
-                            clientDAO.addClient(client);
+                            // Vérifier si l'émail a été déjà utilisé
+                            if( !userExists(emailField.getText()) ){
+                                //Hache du mot de passe saisie
+                                String[] mdp = hachage(String.valueOf(passwordField.getPassword()));
+
+                                // Créer un objet Client avec les champs saisis
+                                Client client = new Client(
+                                        fullNameField.getText(),
+                                        emailField.getText(),
+                                        mdp[0],    //le mot de passe haché
+                                        mdp[1],    //le salt haché
+                                        phoneField.getText(),
+                                        employmentInfoField.getText(),
+                                        Short.parseShort(annualIncomeField.getText()),
+                                        Byte.parseByte(creditScoreField.getText()),
+                                        Date.valueOf(birthDateField.getText()),
+                                        maritalStatusComboBox.getSelectedItem().toString(),
+                                        Short.parseShort(yearsInCanadaField.getText())
+                                );
+
+                                // Ajout du client dans la bdd
+                                ClientDAOImpl clientDAO = new ClientDAOImpl();
+                                clientDAO.addClient(client);
+                            }
+                            else {
+                                //L'adresse mal est déjà utilisé à un utilisateur donc il faut qu'il utilise un autre
+                                infoMessage("Erreur","Adresse mail déjà utilisé","erreur");
+                            }
+
 
                         } else {
-                            // Créer un objet Investor avec les champs saisis
-                            Investisseur investisseur = new Investisseur(
-                                    fullNameField.getText(),
-                                    emailField.getText(),
-                                    hachage(String.valueOf(passwordField.getPassword()))[0],    //le mot de passe haché
-                                    hachage(String.valueOf(passwordField.getPassword()))[1],    //le salt haché
-                                    phoneField.getText(),
-                                    bankNameField.getText(),
-                                    accountDetailsField.getText(),
-                                    riskLevelComboBox.getSelectedItem().toString(),
-                                    educationLevelComboBox.getSelectedItem().toString()
-                            );
 
-                            // Ajout de l'investisseur dans la bdd
-                            InvestisseurDAOImpl investisseurDAO = new InvestisseurDAOImpl();
-                            investisseurDAO.addInvestisseur(investisseur);
+                            // Vérifier si l'émail a été déjà utilisé
+                            if( !userExists(emailField.getText()) ){
+                                //Hache du mot de passe saisie
+                                String[] mdp = hachage(String.valueOf(passwordField.getPassword()));
+
+                                // Créer un objet Investor avec les champs saisis
+                                Investisseur investisseur = new Investisseur(
+                                        fullNameField.getText(),
+                                        emailField.getText(),
+                                        mdp[0],    //le mot de passe haché
+                                        mdp[1],    //le salt haché
+                                        phoneField.getText(),
+                                        bankNameField.getText(),
+                                        accountDetailsField.getText(),
+                                        riskLevelComboBox.getSelectedItem().toString(),
+                                        educationLevelComboBox.getSelectedItem().toString()
+                                );
+
+                                // Ajout de l'investisseur dans la bdd
+                                InvestisseurDAOImpl investisseurDAO = new InvestisseurDAOImpl();
+                                investisseurDAO.addInvestisseur(investisseur);
+                            }
+                            else {
+                                //L'adresse mal est déjà utilisé à un utilisateur donc il faut qu'il utilise un autre
+                                infoMessage("Erreur","Adresse mail déjà utilisé","erreur");
+                            }
                         }
 
                         // Effacer les champs après l'inscription
@@ -361,11 +389,30 @@ public class RegisterView extends JPanel {
     private String[] hachage(String mdp){
         //Création du salt
         SecureRandom random = new SecureRandom();
-        byte[] salt = new byte[1];
+        byte[] salt = new byte[16];
         random.nextBytes(salt);
 
+        System.out.println(salt.toString());
+
+        //Conversion du salt hexa
+        StringBuilder sbSalt = new StringBuilder();
+        for (byte b : salt) {
+            sbSalt.append(String.format("%02x", b));
+        }
 
         return sha256(mdp,salt);
+
+    }
+    private boolean userExists(String email){
+        ClientDAOImpl clientDAO = new ClientDAOImpl();
+        InvestisseurDAOImpl investisseurDAO = new InvestisseurDAOImpl();
+
+        //Stocker le mot de passe associé à l'adresse mail dans un String, s'il existe
+        String clientExist = clientDAO.getPasswordSalt(String.valueOf(email))[0];
+        String investExist = investisseurDAO.getPasswordSalt(String.valueOf(email))[0];
+
+        if( clientExist.equals("") && investExist.equals("") ) return false;
+        else return true;
 
     }
 

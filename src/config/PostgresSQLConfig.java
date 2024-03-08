@@ -20,9 +20,8 @@ public class PostgresSQLConfig {
     public static void initialisationDB(){
         // Création de la table Client
         String createTableSQL = "CREATE TABLE IF NOT EXISTS client (" +
-                "id_client SERIAL PRIMARY KEY,"+
                 "nomComplet VARCHAR(50)," +
-                "adressemail VARCHAR(50)," +
+                "adressemail VARCHAR(50) PRIMARY KEY," +
                 "mdp VARCHAR(300)," +
                 "salt VARCHAR(50)," +
                 "phoneNumero VARCHAR(20)," +
@@ -35,9 +34,8 @@ public class PostgresSQLConfig {
                 ");";
         // Création de la table investisseur
         createTableSQL += "CREATE TABLE IF NOT EXISTS investisseur (" +
-                "id_invest SERIAL PRIMARY KEY,"+
                 "nomComplet VARCHAR(50)," +
-                "adressemail VARCHAR(50)," +
+                "adressemail VARCHAR(50) PRIMARY KEY," +
                 "mdp VARCHAR(300)," +
                 "salt VARCHAR(50)," +
                 "phoneNumero VARCHAR(20)," +
