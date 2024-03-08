@@ -53,17 +53,15 @@ public class InvestisseurDAOImpl implements InvestisseurInterf {
 
             ResultSet resultat = statement.executeQuery(query);
             if(resultat.next()){
-                return new String[]{String.valueOf(resultat.getArray("mdp")), String.valueOf(resultat.getArray("salt"))};
+
+                return new String[]{ String.valueOf(resultat.getArray("mdp")),
+                        String.valueOf(resultat.getArray("salt"))};
             }
         } catch (SQLException e){
             e.printStackTrace();
         }
-        catch (Exception exc){
-            exc.printStackTrace();
-            System.out.println("user introuvable");
-        }
 
-        return null;
+        return new String[]{"",""};
     }
 
 

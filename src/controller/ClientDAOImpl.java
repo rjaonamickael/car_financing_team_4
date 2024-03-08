@@ -4,9 +4,9 @@ import config.PostgresSQLConfig;
 import dao.ClientInterf;
 import model.Client;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+
+import static config.PostgresSQLConfig.connect;
 
 public class ClientDAOImpl implements ClientInterf {
     @Override
@@ -38,5 +38,25 @@ public class ClientDAOImpl implements ClientInterf {
         }catch (SQLException e){
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public String[] getPasswordSalt(String email){
+
+        try (Connection conn = connect() ; Statement statement = conn.createStatement()){
+
+            String query = "SELECT mdp, salt FROM client WHERE adressemail = '"+email+"' ;";
+
+            ResultSet resultat = statement.executeQuery(query);
+            if(resultat.next()){
+
+                return new String[]{ String.valueOf(resultat.getArray("mdp")),
+                        String.valueOf(resultat.getArray("salt"))};
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return new String[]{"",""};
     }
 }

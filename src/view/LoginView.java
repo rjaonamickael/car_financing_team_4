@@ -1,18 +1,16 @@
 package view;
 
-import config.PostgresSQLConfig;
+import controller.ClientDAOImpl;
 import controller.InvestisseurDAOImpl;
-import dao.InvestisseurInterf;
+
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import java.util.HexFormat;
+
 
 import static methods.BiblioMethode.sha256;
 
@@ -60,17 +58,33 @@ public class LoginView extends JPanel {
 
         InvestisseurDAOImpl investisseurDAO = new InvestisseurDAOImpl();
 
-        String mdp = investisseurDAO.getPasswordSalt(email)[0];
-        String salt = investisseurDAO.getPasswordSalt(email)[1];
+        String mdpI = investisseurDAO.getPasswordSalt(email)[0];
+        String saltI = investisseurDAO.getPasswordSalt(email)[1];
 
-        if(mdp.equals( sha256(mdpTape, salt.getBytes() ) ) ){
+        ClientDAOImpl clientDAO = new ClientDAOImpl();
+
+        String mdpC = clientDAO.getPasswordSalt(email)[0];
+        String saltC = clientDAO.getPasswordSalt(email)[1];
+
+
+        if(mdpI.equals( sha256(mdpTape, HexFormat.of().parseHex(saltI) )[0]) ){
+
             JOptionPane.showMessageDialog(LoginView.this, "Vous êtes connecté", "Connecté", JOptionPane.INFORMATION_MESSAGE);
         }
-        else if (!salt.equals(null)){
+        else if (!saltI.equals("")){
             JOptionPane.showMessageDialog(LoginView.this, "Mot de passe incorrect", "erreur", JOptionPane.ERROR_MESSAGE);
         }
         else {
-            JOptionPane.showMessageDialog(LoginView.this, "Utilisateur introuvable", "erreur", JOptionPane.ERROR_MESSAGE);
+            if(mdpC.equals( sha256(mdpTape, HexFormat.of().parseHex(saltC) )[0]) ){
+
+                JOptionPane.showMessageDialog(LoginView.this, "Vous êtes connecté", "Connecté", JOptionPane.INFORMATION_MESSAGE);
+            }
+            else if (!saltC.equals("")){
+                JOptionPane.showMessageDialog(LoginView.this, "Mot de passe incorrect", "erreur", JOptionPane.ERROR_MESSAGE);
+            }
+            else {
+                JOptionPane.showMessageDialog(LoginView.this, "Utilisateur introuvable", "erreur", JOptionPane.ERROR_MESSAGE);
+            }
         }
 
     }
