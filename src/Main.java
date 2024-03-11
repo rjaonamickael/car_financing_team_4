@@ -30,7 +30,7 @@ public class Main extends JFrame {
         setLocationRelativeTo(null);
 
         // Ajouter une image de fond représentant une voiture stylisée
-        ImageIcon carIcon = new ImageIcon("C:\\Users\\webds\\Desktop\\car_financing_team_4-main - Copie\\car_financing_team_4-main\\src\\car.jpg");
+        ImageIcon carIcon = new ImageIcon("D:\\Bossy\\Gérald Godin\\Session 2\\POO\\Projet\\carFinance Rachid\\src\\car.jpg");
         JLabel carLabel = new JLabel(carIcon);
 
         // Ajouter le titre et la description des services de financement
