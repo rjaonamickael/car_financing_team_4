@@ -1,7 +1,6 @@
 package view;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -25,6 +24,7 @@ public class FinancingFormView extends JPanel {
 
         // Ajouter des boutons pour la validation et la soumission
         JButton validerButton = new JButton("Valider");
+        JButton retourButton = new JButton("Retour à l'accueil");
 
         // Utiliser un layout approprié (par exemple, GroupLayout) pour organiser les composants
         GroupLayout layout = new GroupLayout(this);
@@ -41,6 +41,7 @@ public class FinancingFormView extends JPanel {
                 .addComponent(dureeLabel)
                 .addComponent(kilometrageLabel)
                 .addComponent(validerButton)
+                .addComponent(retourButton)
         );
 
         hGroup.addGroup(layout.createParallelGroup()
@@ -71,6 +72,7 @@ public class FinancingFormView extends JPanel {
                 .addComponent(kilometrageTextField)
         );
         vGroup.addComponent(validerButton);
+        vGroup.addComponent(retourButton);
 
         layout.setVerticalGroup(vGroup);
 
@@ -123,6 +125,15 @@ public class FinancingFormView extends JPanel {
 
             private void afficherErreur(String message) {
                 JOptionPane.showMessageDialog(FinancingFormView.this, message, "Erreur de validation", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        // Ajouter une action pour le bouton Retour à l'accueil
+        retourButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Retourner à la page précédente (à implémenter)
+                // Par exemple, ici vous pouvez fermer cette vue ou afficher la page d'accueil
             }
         });
     }

@@ -3,14 +3,11 @@ package view;
 import controller.ClientDAOImpl;
 import controller.InvestisseurDAOImpl;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.util.HexFormat;
-
 
 import static methods.BiblioMethode.sha256;
 
@@ -43,10 +40,25 @@ public class LoginView extends JPanel {
         JButton loginButton = new JButton("Se Connecter");
         add(loginButton, gbc);
 
+        JButton returnHomeButton = new JButton("Retour à la page d'accueil");
+        gbc.gridy++;
+        add(returnHomeButton, gbc);
+
         loginButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e)
+            {
                 loginAction();
+            }
+        });
+
+        returnHomeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Retourner à la page précédente
+                // Ici, vous pouvez implémenter la logique pour revenir à la page d'accueil
+                CardLayout cardLayout = (CardLayout) getParent().getLayout();
+                cardLayout.show(getParent(), "Main");
             }
         });
     }
