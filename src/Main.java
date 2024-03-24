@@ -1,12 +1,10 @@
 import config.PostgresSQLConfig;
 import view.LoginView;
+import view.MainExtendedView;
 import view.RegisterView;
-import view.FinancingFormView;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Main extends JFrame {
     private CardLayout cardLayout = new CardLayout();
@@ -14,6 +12,7 @@ public class Main extends JFrame {
     private JPanel mainPanel = new JPanel(new GridBagLayout());
     private LoginView loginView = new LoginView();
     private RegisterView registerView = new RegisterView();
+    private MainExtendedView mainExtendedView = new MainExtendedView(); // Ajout de la nouvelle page MainExtendedView
 
     public static void main(String[] args) {
         PostgresSQLConfig.initialisationDB();
@@ -25,12 +24,12 @@ public class Main extends JFrame {
 
     public Main() {
         setTitle("Financement Automobile XYZ");
-        setSize(800, 600);
+        setSize(800, 500);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         // Ajouter une image de fond représentant une voiture stylisée
-        ImageIcon carIcon = new ImageIcon("C:\\Users\\webds\\Desktop\\car_financing_team_4-main - Copie\\car_financing_team_4-main\\src\\car.jpg");
+        ImageIcon carIcon = new ImageIcon("C:\\Users\\webds\\Desktop\\carfinance\\carfinance\\src\\car.jpg");
         JLabel carLabel = new JLabel(carIcon);
 
         // Ajouter le titre et la description des services de financement
@@ -43,8 +42,6 @@ public class Main extends JFrame {
         // Boutons de navigation
         JButton loginButton = new JButton("Connexion");
         JButton registerButton = new JButton("Inscription");
-        JButton demandeFinancementButton = new JButton("Formulaire de demande de financement");
-        JButton statusFinancementButton = new JButton("Status demande de financement");
 
         // Utiliser GridBagLayout pour positionner les composants
         GridBagConstraints gbc = new GridBagConstraints();
@@ -76,92 +73,18 @@ public class Main extends JFrame {
         gbc.gridy = 7;
         mainPanel.add(registerButton, gbc);
 
-        gbc.gridy = 8;
-        mainPanel.add(demandeFinancementButton, gbc);
-
-        gbc.gridy = 9;
-        mainPanel.add(statusFinancementButton, gbc);
-
         // Ajouter le panel au cardPanel
         cardPanel.add(mainPanel, "Main");
         cardPanel.add(loginView, "Login");
         cardPanel.add(registerView, "Register");
+        cardPanel.add(mainExtendedView, "MainExtended"); // Ajout de la page MainExtendedView
 
         add(cardPanel);
 
-        loginButton.addActionListener(e -> cardLayout.show(cardPanel, "Login"));
+        loginButton.addActionListener(e -> cardLayout.show(cardPanel, "MainExtended"));
+        // A modifier pour Login
+
+        // Afficher MainExtendedView lors du clic sur le bouton de connexion
         registerButton.addActionListener(e -> cardLayout.show(cardPanel, "Register"));
-
-        demandeFinancementButton.addActionListener(e -> {
-            FinancingFormView financingFormView = new FinancingFormView();
-            cardPanel.add(financingFormView, "FinancingForm");
-            cardLayout.show(cardPanel, "FinancingForm");
-        });
-
-        // Ajouter un ActionListener pour le bouton "Status demande de financement"
-        statusFinancementButton.addActionListener(e -> showStatusFinancementView());
-    }
-
-    private void showStatusFinancementView() {
-        // Créer une instance de la vue du statut de la demande de financement
-        StatusFinancementView statusFinancementView = new StatusFinancementView();
-
-        // Ajouter la vue au cardPanel
-        cardPanel.add(statusFinancementView, "StatusFinancement");
-
-        // Afficher la vue du statut de la demande de financement
-        cardLayout.show(cardPanel, "StatusFinancement");
-    }
-}
-
-class StatusFinancementView extends JPanel {
-    public StatusFinancementView() {
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-
-        // Ajouter les éléments spécifiés dans votre demande
-        JLabel marqueLabel = new JLabel("Marque: Honda ");
-        add(marqueLabel, gbc);
-
-        JLabel modeleLabel = new JLabel("Modèle: CRV ");
-        gbc.gridy++;
-        add(modeleLabel, gbc);
-
-        JLabel anneeLabel = new JLabel("Année: 2015");
-        gbc.gridy++;
-        add(anneeLabel, gbc);
-
-        JLabel kilometrageLabel = new JLabel("Kilométrage: 20000 km");
-        gbc.gridy++;
-        add(kilometrageLabel, gbc);
-
-        JLabel statutLabel = new JLabel("Statut: En cours");
-        gbc.gridy++;
-        add(statutLabel, gbc);
-
-        JProgressBar progressBar = new JProgressBar(0, 100);
-        progressBar.setValue(20);
-        gbc.gridy++;
-        add(progressBar, gbc);
-
-        // Bouton désactivé pour modifier la demande
-        JButton modifierButton = new JButton("Modifier la demande");
-        modifierButton.setEnabled(false);
-        gbc.gridy++;
-        add(modifierButton, gbc);
-
-        // Bouton de retour
-        JButton retourButton = new JButton("Retour à la page principale");
-        gbc.gridy++;
-        add(retourButton, gbc);
-
-        // Ajouter un ActionListener pour le bouton de retour
-        retourButton.addActionListener(e -> {
-            // Revenir à la page principale
-            CardLayout cardLayout = (CardLayout) getParent().getLayout();
-            cardLayout.show(getParent(), "Main");
-        });
     }
 }
