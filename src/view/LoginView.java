@@ -49,6 +49,18 @@ public class LoginView extends JPanel {
             public void actionPerformed(ActionEvent e)
             {
                 loginAction();
+                // Accéder à la base de données une fois connecté
+                accessDatabase();
+            }
+        });
+
+        returnHomeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Retourner à la page précédente
+                // Ici, vous pouvez implémenter la logique pour revenir à la page d'accueil
+                CardLayout cardLayout = (CardLayout) getParent().getLayout();
+                cardLayout.show(getParent(), "Main");
             }
         });
 
@@ -78,7 +90,6 @@ public class LoginView extends JPanel {
         String mdpC = clientDAO.getPasswordSalt(email)[0];
         String saltC = clientDAO.getPasswordSalt(email)[1];
 
-
         if(mdpI.equals( sha256(mdpTape, HexFormat.of().parseHex(saltI) )[0]) ){
 
             JOptionPane.showMessageDialog(LoginView.this, "Vous êtes connecté", "Connecté", JOptionPane.INFORMATION_MESSAGE);
@@ -98,7 +109,12 @@ public class LoginView extends JPanel {
                 JOptionPane.showMessageDialog(LoginView.this, "Utilisateur introuvable", "erreur", JOptionPane.ERROR_MESSAGE);
             }
         }
-
     }
 
+    private void accessDatabase() {
+        // Accès direct à la base de données
+        // Implémentez ici la logique pour accéder à la base de données après la connexion
+        // Par exemple, vous pouvez appeler des méthodes de DAO pour récupérer ou manipuler des données
+        // Assurez-vous de gérer les exceptions appropriées
+    }
 }
