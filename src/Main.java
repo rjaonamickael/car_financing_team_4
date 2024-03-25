@@ -1,4 +1,6 @@
 import config.PostgresSQLConfig;
+import view.FinancingFormView;
+import view.InvestmentManagementPage;
 import view.LoginView;
 import view.MainExtendedView;
 import view.RegisterView;
@@ -29,7 +31,9 @@ public class Main extends JFrame {
         setLocationRelativeTo(null);
 
         // Ajouter une image de fond représentant une voiture stylisée
+
         ImageIcon carIcon = new ImageIcon("C:\\Users\\webds\\Desktop\\carfinance\\carfinance\\src\\car.jpg");
+
         JLabel carLabel = new JLabel(carIcon);
 
         // Ajouter le titre et la description des services de financement
@@ -86,5 +90,7 @@ public class Main extends JFrame {
 
         // Afficher MainExtendedView lors du clic sur le bouton de connexion
         registerButton.addActionListener(e -> cardLayout.show(cardPanel, "Register"));
+
     }
 }
+

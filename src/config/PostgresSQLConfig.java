@@ -45,6 +45,17 @@ public class PostgresSQLConfig {
                 "niveauEducInvest VARCHAR(10)" +
                 ");";
 
+        // Création de la table demandefinancement
+        createTableSQL += "CREATE TABLE IF NOT EXISTS demandefinancement (" +
+                "id_demande SERIAL PRIMARY KEY," +
+                "user_type VARCHAR(20)," +
+                "nomComplet VARCHAR(50)," +
+                "vin CHAR(17)," +
+                "montant INT," +
+                "duree INT," +
+                "kilometrage INT" +
+                ");";
+
         try (Connection conn = connect() ; Statement statement = conn.createStatement()){
             statement.execute(createTableSQL);
             System.out.println("Tables crées");

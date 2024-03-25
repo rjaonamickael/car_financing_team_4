@@ -46,10 +46,21 @@ public class LoginView extends JPanel {
 
         loginButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e)
+            {
                 loginAction();
                 // Accéder à la base de données une fois connecté
                 accessDatabase();
+            }
+        });
+
+        returnHomeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Retourner à la page précédente
+                // Ici, vous pouvez implémenter la logique pour revenir à la page d'accueil
+                CardLayout cardLayout = (CardLayout) getParent().getLayout();
+                cardLayout.show(getParent(), "Main");
             }
         });
 
