@@ -85,7 +85,7 @@ public class Main extends JFrame {
 
         add(cardPanel);
 
-        loginButton.addActionListener(e -> cardLayout.show(cardPanel, "MainExtended"));
+        loginButton.addActionListener(e -> cardLayout.show(cardPanel, "Login"));
         // A modifier pour Login
 
         // Afficher MainExtendedView lors du clic sur le bouton de connexion

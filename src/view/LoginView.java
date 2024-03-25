@@ -48,19 +48,10 @@ public class LoginView extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                loginAction();
-                // Accéder à la base de données une fois connecté
-                accessDatabase();
-            }
-        });
 
-        returnHomeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Retourner à la page précédente
-                // Ici, vous pouvez implémenter la logique pour revenir à la page d'accueil
-                CardLayout cardLayout = (CardLayout) getParent().getLayout();
-                cardLayout.show(getParent(), "Main");
+                loginAction();
+                //connect();
+
             }
         });
 
@@ -91,7 +82,7 @@ public class LoginView extends JPanel {
         String saltC = clientDAO.getPasswordSalt(email)[1];
 
         if(mdpI.equals( sha256(mdpTape, HexFormat.of().parseHex(saltI) )[0]) ){
-
+            connect();
             JOptionPane.showMessageDialog(LoginView.this, "Vous êtes connecté", "Connecté", JOptionPane.INFORMATION_MESSAGE);
         }
         else if (!saltI.equals("")){
@@ -99,7 +90,7 @@ public class LoginView extends JPanel {
         }
         else {
             if(mdpC.equals( sha256(mdpTape, HexFormat.of().parseHex(saltC) )[0]) ){
-
+                connect();
                 JOptionPane.showMessageDialog(LoginView.this, "Vous êtes connecté", "Connecté", JOptionPane.INFORMATION_MESSAGE);
             }
             else if (!saltC.equals("")){
@@ -111,10 +102,8 @@ public class LoginView extends JPanel {
         }
     }
 
-    private void accessDatabase() {
-        // Accès direct à la base de données
-        // Implémentez ici la logique pour accéder à la base de données après la connexion
-        // Par exemple, vous pouvez appeler des méthodes de DAO pour récupérer ou manipuler des données
-        // Assurez-vous de gérer les exceptions appropriées
+    private void connect() {
+        CardLayout cardLayout = (CardLayout) getParent().getLayout();
+        cardLayout.show(getParent(), "MainExtended");
     }
 }
