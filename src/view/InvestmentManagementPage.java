@@ -30,7 +30,6 @@ public class InvestmentManagementPage extends JFrame implements ActionListener {
     public InvestmentManagementPage() {
         setTitle("Gestion d'Investissement");
         setSize(600, 800);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
         // Section 0 : Informations sur l'investissement

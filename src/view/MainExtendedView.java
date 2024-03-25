@@ -40,7 +40,7 @@ public class MainExtendedView extends JPanel {
                 // Ouvrir le formulaire de demande de financement
                 FinancingFormView financingFormView = new FinancingFormView();
                 JFrame frame = new JFrame("Formulaire de demande de financement");
-                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                setSize(600, 800);
                 frame.setContentPane(financingFormView);
                 frame.pack();
                 frame.setVisible(true);
@@ -54,7 +54,7 @@ public class MainExtendedView extends JPanel {
                 // Afficher le statut de la demande de financement
                 StatusFinancementView statusFinancementView = new StatusFinancementView();
                 JFrame frame = new JFrame("Suivi demande de financement");
-                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                setSize(600, 800);
                 frame.setContentPane(statusFinancementView);
                 frame.pack();
                 frame.setVisible(true);
@@ -82,9 +82,8 @@ public class MainExtendedView extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Fermer la vue actuelle
-                SwingUtilities.getWindowAncestor(MainExtendedView.this).dispose();
-                // Retourner à la page d'accueil
-                retourAccueil();
+                CardLayout cardLayout = (CardLayout) getParent().getLayout();
+                cardLayout.show(getParent(), "Main");
             }
         });
     }
@@ -94,6 +93,7 @@ public class MainExtendedView extends JPanel {
         // Ajoutez ici le code pour retourner à la page d'accueil
         // Par exemple :
         // new HomePage();
+
     }
 
     // Méthode pour ajouter le listener au bouton de retour
